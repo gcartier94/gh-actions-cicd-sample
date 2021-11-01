@@ -1,0 +1,29 @@
+name: Sample Continuous Integration Workflow with Zowe
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  setup_zowe:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node.js
+      - uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+      - name: Install Zowe
+        run: npm install -g @zowe/cli@zowe-v1-lts
+
+      - name: Configure Zowe z/OSMF profile
+        run: |
+          zowe profiles create zosmf-profile actions \
+          --host ${{ secrets.ZOSMF_HOST }} \
+          --port ${{ secrets.ZOSMF_PORT }} \
+          --user ${{ secrets.ZOSMF_USER }} \
+          --password ${{ secrets.ZOSMF_USER_PASSWORD }} \
+          --reject-unauthorized false
