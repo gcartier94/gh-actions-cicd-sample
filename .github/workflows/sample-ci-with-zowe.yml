@@ -5,7 +5,7 @@ on:
       - master
 
 jobs:
-  setup_zowe:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,3 +27,20 @@ jobs:
           --user ${{ secrets.ZOSMF_USER }} \
           --password ${{ secrets.ZOSMF_USER_PASSWORD }} \
           --reject-unauthorized false
+
+      - name: Configure Zowe SSH profile
+        run: |
+          zowe profiles create ssh-profile actions \
+          --host ${{ secrets.SSH_HOST }} \
+          --port ${{ secrets.SSH_PORT }} \
+          --user ${{ secrets.SSH_USER }} \
+          --password ${{ secrets.SSH_USER_PASSWORD }} \
+
+      - name: Move generic script to USS
+        run: zowe files upload file-to-uss "./ci/generic-code.sh" "/u/${{ secrets.SSH_USER }}/generic-code.sh"
+        
+      - name: Make generic script executable on USS
+        run: zowe ssh issue cmd "chmod +x generic-code.sh"
+
+      - name: Run generic script
+        run: zowe ssh issue cmd "./generic-code.sh"
