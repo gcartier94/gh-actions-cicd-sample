@@ -1,4 +1,4 @@
-name: Sample Continuous Integration Workflow with Zowe
+name: Sample Continuous Integration Workflow with Zowe CLI
 on:
   push:
     branches:
