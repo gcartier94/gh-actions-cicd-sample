@@ -18,7 +18,8 @@ jobs:
 
       - name: Install Zowe
         run: npm install -g @zowe/cli@zowe-v1-lts
-
+      
+      # Only required if Rocket Git is not available on USS
       - name: Configure Zowe z/OSMF profile
         run: |
           zowe profiles create zosmf-profile actions \
@@ -36,6 +37,7 @@ jobs:
           --user ${{ secrets.SSH_USER }} \
           --password ${{ secrets.SSH_USER_PASSWORD }} \
 
+      # Only required if Rocket Git is not available on USS
       - name: Move generic script to USS
         run: zowe files upload file-to-uss "./ci/generic-code.sh" "/u/${{ secrets.SSH_USER }}/generic-code.sh"
         
